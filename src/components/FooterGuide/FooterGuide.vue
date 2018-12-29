@@ -1,8 +1,8 @@
 <template>
   <div id="footer">
-    <a href="javascript:;" v-for="(nav,index) in navs" :key="index" :class="{active:hasActive}" @click="toggleClass">
+    <a href="javascript:;" v-for="(nav,index) in navs" :key="index" :class="nav.className" @click="toggleClass(index)">
       <i class="icon_nav"></i>
-      <span>{{nav}}</span>
+      <span>{{nav.name}}</span>
     </a>
   </div>
 </template>
@@ -11,13 +11,25 @@
   export default {
     data () {
       return {
-        navs: ['首页','分类','识物','购物车','个人'],
-        hasActive: false
+        navs: [
+          {code: 0,className: '',name:'首页',path: '/home'},
+          {code: 1,className: '',name:'分类',path: '/classify'},
+          {code: 2,className: '',name:'识物',path: '/find'},
+          {code: 3,className: '',name:'购物车',path: '/shopCart'},
+          {code: 4,className: '',name:'个人',path: '/personal'},
+        ],
       }
     },
     methods: {
-      toggleClass () {
-        this.hasActive = !this.hasActive
+      toggleClass (index) {
+
+        this.$router.replace(this.navs[index].path)
+        this.navs.forEach(nav => {
+          nav.className = ''
+          this.navs[index].className = 'nav_' + index
+        })
+
+
       }
     }
   }
@@ -41,11 +53,6 @@
       flex-direction: column
       align-items center
       justify-content center
-      &.active
-        i
-          background-position 0 -3.33333rem
-        span
-          color #b4282d
       &:nth-child(1)
         i
           background-position 0 -3.33333rem
@@ -61,6 +68,31 @@
       &:nth-child(5)
         i
          background-position 0 -6rem
+      &.nav_0
+        i
+          background-position 0 -2.66667rem
+        span
+          color #b4282d
+      &.nav_1
+        i
+          background-position 0 -1.33333rem
+        span
+          color #b4282d
+      &.nav_2
+        i
+          background-position 0 -4rem
+        span
+          color #b4282d
+      &.nav_3
+        i
+          background-position 0 0
+        span
+          color #b4282d
+      &.nav_4
+        i
+          background-position 0 -5.33333rem
+        span
+          color #b4282d
       .icon_nav
         display inline-block;
         vertical-align middle;
