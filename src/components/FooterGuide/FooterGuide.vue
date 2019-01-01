@@ -46,6 +46,7 @@
     justify-content space-around
     width 100%
     height 1.30667rem
+    margin-top -1.30667rem
     background #fff
     border-top 1px solid #d9d9d9
     a
