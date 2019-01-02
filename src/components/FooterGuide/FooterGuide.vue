@@ -1,6 +1,6 @@
 <template>
   <div id="footer">
-    <a href="javascript:;" v-for="(nav,index) in navs" :key="index" :class="nav.className" @click="toggleClass(index)">
+    <a href="javascript:;"  v-for="(nav,index) in navs" :key="index" :class="nav.className" @click="toggleClass(index)">
       <i class="icon_nav"></i>
       <span>{{nav.name}}</span>
     </a>

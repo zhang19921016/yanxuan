@@ -125,4 +125,5 @@
 
         .active
           color #ab2b2b
+          border-left 2px solid #ab2b2b
 </style>
