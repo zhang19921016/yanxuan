@@ -2,20 +2,51 @@
   <div class="show">
     <div class="top" v-if="homeDate.recModule">
       <div class="t-top">{{homeDate.recModule.recommendName}}</div>
-      <div class="t-middle">{{homeDate.recModule.globalName}}</div>
-      <div class="t-bottom">
-        <ul class="content">
-          <li v-for="(pic,index) in collections.lookList" :key="index">
-            <img :src="pic.avatar" alt="">
-          </li>
-        </ul>
+      <div class="t-middle">{{collections.title}}</div>
+      <div class="t-bottom swiper-container">
+        <div class="swiper-wrapper">
+          <ul class="content swiper-slide">
+            <li v-for="(pic,index) in collections.lookList" :key="index">
+              <img :src="pic.banner.picUrl" alt="">
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <Gap></Gap>
+    <div class="content">
+      <div class="top">TA们的严选生活</div>
+      <div class="middle">
+        <div class="m-public">
+          <p class="active">最新</p>
+        </div>
+        <div class="m-public">
+          <p>本月最热</p>
+        </div>
+        <div class="m-public">
+          <p>晒单合辑</p>
+        </div>
+      </div>
+      <div class="section">
+        <div class="left" >
+          <div class="item" v-for="(leftList,index) in leftLists" :key="index" v-if="leftList.content">
+            <img :src="leftList.bannerInfo.picUrl" alt="">
+            <p>{{leftList.content}}</p>
+          </div>
+        </div>
+        <div class="right">
+          <div class="item" v-for="(rightList,index) in rightLists" :key="index">
+            <img :src="rightList.bannerInfo.picUrl" alt="">
+            <p>{{rightList.content}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+  import Swiper from 'swiper'
   import {mapState} from 'vuex'
   import Gap from '../../../components/Gap/Gap.vue'
   export default {
@@ -27,13 +58,25 @@
       this.$store.dispatch('getHomeDate')
       this.$store.dispatch('getLists')
       this.$store.dispatch('getCollections')
+      this.$nextTick(() => {
+        new Swiper ('.swiper-container', {
+          direction: 'horizontal',
+          loop: true, // 循环模式选项
+        })
+      })
     },
     computed: {
       ...mapState({
         homeDate: state => state.find.homeDate,
         lists: state => state.find.lists,
         collections: state => state.find.collections
-      })
+      }),
+      leftLists () {
+        return this.lists.filter((item,index) => index%2 === 0 )
+      },
+      rightLists () {
+        return this.lists.filter((item,index) => index%2 === 1 )
+      },
     },
     components: {
       Gap
@@ -48,13 +91,9 @@
       display flex
       align-items center
       flex-direction column
-      flex-shrink 0
-      flex-grow 0
       background-color #fff
       padding-top .37333rem
       margin-bottom .26667rem
-      padding-bottom .53333rem
-      align-content flex-start
       .t-top
         margin-bottom .32rem
         flex-direction row
@@ -81,18 +120,91 @@
         height 3.2rem
         margin-top .42667rem
         .content
-          display flex
-          flex-shrink 0
-          flex-grow 0
-          align-items stretch
-          align-content flex-start
+          width 1100%
+          height 3.2rem
+          margin 12px 0 0 12px
+          flex-direction row
+          padding-bottom 40px
           li
-            width 3.2rem
-            height 3.2rem
+            width 120px
+            height 120px
             border-radius 4px
             overflow hidden
-            margin 0 .13333rem
+            margin-right 10px
             img
               width 100%
               height 100%
+    .content
+      padding-top 10px
+      display flex
+      align-items center
+      flex-direction column
+      flex-shrink 0
+      flex-grow 0
+      align-content flex-start
+      .top
+        margin-bottom .26667rem
+        color #333
+        font-size 17px
+        height 16.98px
+        line-height 16.98px
+        font-weight 700
+      .middle
+        width 10rem
+        height 1.76rem
+        padding-top .32rem
+        display flex
+        justify-content space-around
+        .m-public
+          width 2.29333rem
+          height 1.6rem
+          margin 0 .32rem
+          padding .42667rem 0
+          p
+            width 2.29333rem
+            height .74667rem
+            border-radius 4px
+            line-height .74667rem
+            text-align center
+            box-sizing border-box
+            font-size .37333rem
+            color #333
+            background-color #f4f4f4
+            font-family PingFangSC-Light
+            &.active
+              background-color #ffe4af
+              color #b0955f
+              font-weight 700
+      .section
+        width 9.73333rem
+        min-height 13.33333rem
+        display flex
+        flex-direction row
+        align-items stretch
+        .left,.right
+          width 4.86667rem
+          display flex
+          align-items center
+          flex-direction column
+          .item
+            width 4.6rem
+            border-radius 4px
+            align-items center
+            overflow hidden
+            img
+              width 4.6rem
+              height 6.13333rem
+            p
+              padding -1px .21333rem 0
+              color #333
+              font-size .32rem
+              line-height .48rem
+              -webkit-flex-wrap wrap
+              flex-wrap wrap
+              lines 2
+              display -webkit-box
+              -webkit-box-orient vertical
+              overflow hidden
+              text-overflow ellipsis
+              -webkit-line-clamp 2
 </style>

@@ -14,39 +14,66 @@ import New from '../pages/Find/New/New.vue'
 import Show from '../pages/Find/Show/Show.vue'
 import Nhome from '../pages/Find/Nhome/Nhome.vue'
 
+import Login from '../pages/Login/Login.vue'
+import Register from '../pages/Register/Register.vue'
+
 
 export default[
     {
       path: '/home',
-      component: Home
+      component: Home,
+      meta: {
+        showFooter:true
+      }
     },
     {
       path: '/classify',
-      component: Classify
+      component: Classify,
+      meta: {
+        showFooter:true
+      }
     },
     {
       path: '/find',
       component: Find,
+      meta: {
+        showFooter:true
+      },
       children: [
         {
           path: '/find/recommend',
-          component: Recommend
+          component: Recommend,
+          meta: {
+            showFooter:true
+          }
         },
         {
           path: '/find/expert',
-          component: Expert
+          component: Expert,
+          meta: {
+            showFooter:true
+          }
         },
         {
           path: '/find/new',
-          component: New
+          component: New,
+          meta: {
+            showFooter:true
+          }
         },
         {
           path: '/find/show',
-          component: Show
+          component: Show,
+          meta: {
+            showFooter:true
+          }
         },
         {
           path: '/find/nhome',
-          component: Nhome
+          component: Nhome,
+          meta: {
+            showFooter:true
+          }
         },
         {
           path: '',
@@ -56,11 +83,22 @@ export default[
     },
     {
       path: '/shopCart',
-      component: ShopCart
+      component: ShopCart,
+      meta: {
+        showFooter:true
+      }
     },
     {
       path: '/personal',
       component: Personal
+    },
+    {
+      path:'/login',
+      component: Login
+    },
+    {
+      path:'/register',
+      component: Register
     },
     {
       path: '/',

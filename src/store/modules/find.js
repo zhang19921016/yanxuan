@@ -80,7 +80,7 @@ const actions = {
     }
   },
   async getNews ({commit,state}) {
-    if (state.experts.length>0) {
+    if (state.experts.length>0 && state.news.length > 0 && state.homes.length > 0 ) {
       return
     }
     const result = await reqExperts(5,5)
