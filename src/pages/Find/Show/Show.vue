@@ -7,7 +7,7 @@
         <div class="swiper-wrapper">
           <ul class="content swiper-slide">
             <li v-for="(pic,index) in collections.lookList" :key="index">
-              <img :src="pic.banner.picUrl" alt="">
+              <img  v-lazy="pic.banner.picUrl" alt="">
             </li>
           </ul>
         </div>
@@ -30,13 +30,13 @@
       <div class="section">
         <div class="left" >
           <div class="item" v-for="(leftList,index) in leftLists" :key="index" v-if="leftList.content">
-            <img :src="leftList.bannerInfo.picUrl" alt="">
+            <img  v-lazy="leftList.bannerInfo.picUrl" alt="">
             <p>{{leftList.content}}</p>
           </div>
         </div>
         <div class="right">
           <div class="item" v-for="(rightList,index) in rightLists" :key="index">
-            <img :src="rightList.bannerInfo.picUrl" alt="">
+            <img  v-lazy="rightList.bannerInfo.picUrl" alt="">
             <p>{{rightList.content}}</p>
           </div>
         </div>

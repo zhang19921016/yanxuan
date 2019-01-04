@@ -2,11 +2,11 @@
   <div class="s-right">
     <div class="content">
       <div class="banner" >
-        <img v-if="lists.length>0" :src="lists[num].wapBannerUrl" alt="">
+        <img v-if="lists.length>0"  v-lazy="lists[num].wapBannerUrl" alt="">
       </div>
       <ul class="cateList">
         <li v-for="(item,index) in newLists" :key="index">
-          <img :src="item.bannerUrl" alt="">
+          <img  v-lazy="item.bannerUrl" alt="">
           <p>{{item.name}}</p>
         </li>
       </ul>

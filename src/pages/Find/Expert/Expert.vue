@@ -5,14 +5,14 @@
         <Gap></Gap>
         <div class="inner-one" v-if="expert.type === 0">
           <div class='top'>
-            <img :src="expert.avatar" alt="">
+            <img v-lazy="expert.avatar" alt="">
             <span>{{expert.nickname}}</span>
           </div>
           <div class="text">
             {{expert.title}}
           </div>
           <div class="middle">
-            <img :src="expert.picUrl" alt="">
+            <img v-lazy="expert.picUrl" alt="">
           </div>
           <div class="bottom">
             <i class="iconfont icon-yanjing"></i>
@@ -22,7 +22,7 @@
         <div class="inner-two"  v-else>
           <div class="left">
             <div class="top">
-              <img :src="expert.avatar" alt="">
+              <img v-lazy="expert.avatar" alt="">
               <span>{{expert.nickname}}</span>
             </div>
             <div class="text">{{expert.title}}</div>
@@ -33,7 +33,43 @@
             </div>
           </div>
           <div class="right">
-            <img :src="expert.picUrl" alt="">
+            <img v-lazy="expert.picUrl" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="inner" v-for="(expert,index) in newExperts" :key="index" v-if="newExperts.length>0">
+        <Gap></Gap>
+        <div class="inner-one" v-if="expert.type === 0">
+          <div class='top'>
+            <img v-lazy="expert.avatar" alt="">
+            <span>{{expert.nickname}}</span>
+          </div>
+          <div class="text">
+            {{expert.title}}
+          </div>
+          <div class="middle">
+            <img v-lazy="expert.picUrl" alt="">
+          </div>
+          <div class="bottom">
+            <i class="iconfont icon-yanjing"></i>
+            <span>{{expert.readCount}}人看过</span>
+          </div>
+        </div>
+        <div class="inner-two"  v-else>
+          <div class="left">
+            <div class="top">
+              <img v-lazy="expert.avatar" alt="">
+              <span>{{expert.nickname}}</span>
+            </div>
+            <div class="text">{{expert.title}}</div>
+            <div class="desc">{{expert.subTitle}}</div>
+            <div class="bottom">
+              <i class="iconfont icon-yanjing"></i>
+              <span>{{expert.readCount}}人看过</span>
+            </div>
+          </div>
+          <div class="right">
+            <img v-lazy="expert.picUrl" alt="">
           </div>
         </div>
       </div>
@@ -43,41 +79,47 @@
 
 <script>
   import BScroll from 'better-scroll'
+  import {reqExperts} from '../../../api'
   import Gap from '../../../components/Gap/Gap.vue'
   import {mapState} from 'vuex'
   export default {
     name: '',
     data () {
       return {
-        noData: false
+        noData: false,
+        newExperts: []
       }
     },
     mounted () {
       this.$store.dispatch('getExperts')
-      this.$nextTick(() => {
-        this.scroll = new BScroll('.wrap',{
-          click: true
-        })
-      })
+      this.scrollFn()
     },
     computed: {
       ...mapState({
         experts: state => state.find.experts
-      })
+      }),
     },
-    watch: {
-      experts () {
+    methods: {
+      scrollFn () {
         this.$nextTick(() => {
-          this.scroll = new BScroll('.wrap',{
-            click: true,
-            probeType: 2,
-            pullUpLoad: -60,
-            useTransition:false
-          })
+          if (!this.scroll) {
+            this.scroll = new BScroll('.wrap',{
+              click: true
+            })
+          }else{
+            this.scroll.refresh();
+          }
           let n = 0;
-          this.scroll.on("pullingUp",() => {
+          this.scroll.on("pullingUp",async () => {
+            console.log('updated');
             n++;
-            this.$store.dispatch('getExperts')
+            //发送请求
+            const result = await reqExperts(5,4)
+            if (result.code === '200') {
+              const experts = result.data.result
+              //更改newExperts
+              this.newExperts = this.newExperts.concat(experts)
+            }
             setTimeout(() => {
               // 事情做完，需要调用此方法告诉 better-scroll 数据已加载，否则上拉事件只会执行一次
               this.scroll.finishPullUp()

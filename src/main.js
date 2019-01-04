@@ -6,6 +6,12 @@ import router from './router'
 import store from './store'
 import './mock/mock'
 
+//图片懒加载
+import VueLazyload from 'vue-lazyload'
+import loading from './common/img/loading.gif'
+Vue.use(VueLazyload, {
+  loading
+})
 
 /* eslint-disable no-new */
 new Vue({

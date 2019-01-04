@@ -5,7 +5,7 @@
       <div class="inner">
         <div class="top">{{home.title}}</div>
         <div class="middle">
-          <img :src="home.picUrl" alt="">
+          <img  v-lazy="home.picUrl" alt="">
         </div>
         <div class="bottom">
           <i class="iconfont icon-yanjing"></i>

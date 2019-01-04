@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <div class="left" @click="$router.replace('/home')"></div>
+    <div class="left" @click="goHome"></div>
     <div class="middle"></div>
     <div class="right">
       <i class="icon icon-search"></i>
@@ -14,6 +14,11 @@
     name: '',
     data () {
       return {}
+    },
+    methods: {
+      goHome () {
+        this.$router.replace('/home')
+      }
     }
   }
 </script>

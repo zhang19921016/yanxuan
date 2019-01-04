@@ -1,7 +1,7 @@
 <template>
   <div class="s-personalTailorModule">
     <div class="title">私人订制</div>
-    <div class="swiper-container" id="swiper-container-personal">
+    <div class="swiper-container">
       <div class="swiper-wrapper">
         <ul class="swiper-slide" v-for="(personalAddress,index) in personalAddresses" :key="index">
           <li class="slide-item" v-for="(item,index) in personalAddress" :key="index">
@@ -14,8 +14,6 @@
           </li>
         </ul>
       </div>
-      <!-- 如果需要分页器 -->
-      <div class="swiper-pagination"></div>
     </div>
   </div>
 </template>
@@ -100,12 +98,8 @@
       }
     },
     mounted () {
-      new Swiper ('#swiper-container-personal', {
+      new Swiper ('.swiper-container', {
         loop: true, // 循环模式选项
-        // 如果需要分页器
-        pagination: {
-          el: '.swiper-pagination',
-        }
       })
     }
   }

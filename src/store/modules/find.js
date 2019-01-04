@@ -35,7 +35,7 @@ const mutations = {
     state.recommends = recommends
   },
   [RECEIVE_EXPERTS] (state,{experts}) {
-    state.experts = state.experts.concat(experts)
+    state.experts = experts
   },
   [RECEIVE_NEWS] (state,{news}) {
     state.news = state.news.concat(news)
@@ -54,6 +54,7 @@ const mutations = {
   }
 }
 
+let num = 0
 const actions = {
   async getTabs ({commit}) {
     const result = await reqTabs()
@@ -72,7 +73,8 @@ const actions = {
     }
   },
   async getExperts ({commit}) {
-    const result = await reqExperts(5,4)
+    num++;
+    const result = await reqExperts(num,5,4)
     if (result.code === '200') {
       const experts = result.data.result
       //将数据提交到mutation中
@@ -83,7 +85,7 @@ const actions = {
     if (state.experts.length>0 && state.news.length > 0 && state.homes.length > 0 ) {
       return
     }
-    const result = await reqExperts(5,5)
+    const result = await reqExperts(1,5,5)
     if (result.code === '200') {
       const news = result.data.result
       //将数据提交到mutation中
@@ -91,7 +93,7 @@ const actions = {
     }
   },
   async getHomes ({commit}) {
-    const result = await reqExperts(5,6)
+    const result = await reqExperts(1,5,6)
     if (result.code === '200') {
       const homes = result.data.result
       //将数据提交到mutation中

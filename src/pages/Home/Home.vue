@@ -7,7 +7,7 @@
     <div id="header">
       <div class="header-top">
         <a class="logo"></a>
-        <div class="search">
+        <div class="search" @click="$router.replace('/search')">
           <i class="icon"></i>
           <span>搜索商品, 共19964款好物</span>
         </div>
@@ -38,14 +38,13 @@
     </div>
     <div class="swiper-container swiper01">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="(address,index) in swiperAddresses" :key="index"><img :src="address" alt=""></div>
+          <div class="swiper-slide" v-for="(address,index) in swiperAddresses" :key="index"><img  v-lazy="address" alt=""></div>
         </div>
         <!-- 如果需要分页器 -->
         <div  class="swiper-pagination swiper-pagination-bullets"></div>
       </div>
     <div class="servicePolicy">
       <ul class="g-grow">
-
         <li class="item">
           <a href="javascript:;">
             <i class="service_icon"></i>
@@ -69,7 +68,7 @@
     <div class="section">
       <ul class="s-carousel">
         <li class="s-carousel-item" v-for="(carouselAddress,index) in carouselAddresses" :key="index">
-          <img :src="carouselAddress.url" alt="">
+          <img  v-lazy="carouselAddress.url" alt="">
           <div class="text">{{carouselAddress.name}}</div>
         </li>
       </ul>
@@ -81,8 +80,8 @@
           <div class="title">{{optAddress.title}}</div>
           <div class="desc">{{optAddress.desc}}</div>
           <div class="images">
-            <img class="images-left" :src="optAddress.url[0]" alt="">
-            <img class="images-right" :src="optAddress.url[1]" alt="">
+            <img class="images-left"  v-lazy="optAddress.url[0]" alt="">
+            <img class="images-right"  v-lazy="optAddress.url[1]" alt="">
           </div>
         </div>
       </div>

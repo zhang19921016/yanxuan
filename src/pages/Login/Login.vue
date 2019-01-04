@@ -8,14 +8,17 @@
       <div class="userLogin">
         <div class="inner">
           <div class="public username">
-            <input type="text" :placeholder="isPhoneLogin?'请输入手机号':'邮箱账号'">
+            <input type="text" :placeholder="isPhoneLogin?'请输入手机号':'邮箱账号'" v-model="username">
           </div>
           <div class="public pwd" :class="{on: loginTypes!==0 }">
-            <input type="text" :placeholder="loginTypes ===0?'请输入短信验证码':'请输入密码'" v-if="isPhoneLogin">
-            <input type="text" placeholder="密码" v-else>
-            <button class="btn-code" v-if="isPhoneLogin && loginTypes === 0">获取验证码</button>
+            <input type="text" :placeholder="loginTypes ===0?'请输入短信验证码':'请输入密码'" v-if="isPhoneLogin" v-model="pwd">
+            <input type="text" placeholder="密码" v-else v-model="pwd">
+            <button class="btn-code" v-if="isPhoneLogin && loginTypes === 0" @click="sendCode">{{computeTime?`已发送${computeTime}s`:'发送验证码'}}</button>
           </div>
           <div class="help">
+            <div class="errMsg" v-if="errMsg.length>0">
+              <span>{{errMsg}}</span>
+            </div>
             <div class="left">
               <span v-if="isPhoneLogin">{{loginTypes === 0?'遇到问题?':'忘记密码'}}</span>
               <span @click="$router.replace('/register')" v-else >注册账号</span>
@@ -25,7 +28,7 @@
               <span v-else>忘记密码</span>
             </div>
           </div>
-          <div class="btn btn-login">
+          <div class="btn btn-login" @click="login">
             <span>登录</span>
           </div>
         </div>
@@ -45,19 +48,26 @@
 
 <script>
   import PubSub from 'pubsub-js'
+  import {MessageBox,Toast} from 'mint-ui';
   import PerHeader from '../../components/PerHeader/PerHeader.vue'
+  import {reqSendcode,reqLoginSms} from '../../api/'
   export default {
     name: '',
     data () {
       return {
         isPhoneLogin: true,  //是否手机登陆,true为是
         loginTypes: 0, //0代表着手机短信验证 1代表手机密码登陆
+        username: '', //用户输入登陆的凭证
+        pwd: '' , //密码或短信验证码
+        errMsg: '' ,//错误提示
+        computeTime: 0, //发送验证码的提示时间
       }
     },
     mounted () {
       PubSub.subscribe('msg', (msg, data) => {
         this.isPhoneLogin = data
       })
+
     },
     methods: {
       toggleLogin () {
@@ -67,11 +77,82 @@
           this.loginTypes = 0
         }
 
+      },
+      async sendCode () {
+        if (!this.flag) {
+          this.computeTime = 30
+          this.flag = true
+          const intervalId = setInterval(() => {
+            this.computeTime--
+            if (this.computeTime <= 0) {
+              this.computeTime = 0
+              this.flag = false
+              clearInterval(intervalId)
+            }
+
+          },1000)
+          const result = await reqSendcode(this.username)
+          if (result.code === 0) {
+            //短信发送成功
+            Toast({
+              message: '短信发送成功',
+              position: 'middle',
+              duration: 5000
+            });
+          }else{
+            //短信发送失败
+            //清除定时器
+            this.computeTime = 0
+            //提示重新发送
+            MessageBox.alert(result.msg);
+          }
+        }
+
+      },
+      async login () {
+        const {username,pwd,isPhoneLogin,loginTypes} = this
+        const regMaill = new RegExp("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$") //邮箱正则
+        const regPwd  = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$/ //密码正则
+        const regPhone = /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/ //手机号正则
+        if (isPhoneLogin) {
+          //手机密码登陆
+          if (!username) {
+            this.errMsg = '账号不能为空!'
+          }else if (!pwd) {
+            this.errMsg = '密码不能为空!'
+          }else if (!regPhone.test(username) && !regPwd.test(pwd)) {
+            this.errMsg = '账号或密码错误!'
+          }
+          //手机登陆
+          if (!loginTypes) {
+            //短信验证登陆
+            const result = await reqLoginSms(username,pwd)
+            console.log(result);
+            if (result.code !== 0) {
+              this.errMsg = '验证码错误!'
+            }
+          }
+        }else{
+          //邮箱登陆
+          if (!username) {
+            this.errMsg = '账号不能为空!'
+          }else if (!pwd) {
+            this.errMsg = '密码不能为空!'
+          }else if (!regMaill.test(username) && !regPwd.test(pwd)) {
+            this.errMsg = '账号或密码错误!'
+          }
+        }
+        if (!this.errMsg) {
+          this.$router.replace('/success')
+        }
+        this.username = ''
+        this.pwd = ''
       }
     },
     components: {
       PerHeader
     }
+
   }
 </script>
 
@@ -148,6 +229,14 @@
             height 0.582rem
             line-height 0.582rem
             padding 0.233rem 0 2.24rem
+            .errMsg
+              width 298px
+              margin-top -3px
+              color #b4282d
+              font-size 12px
+              line-height 20px
+              vertical-align top
+              word-break break-all
             .left
               float left
               height 0.6rem

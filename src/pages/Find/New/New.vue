@@ -7,7 +7,7 @@
         <div class="text">{{item.subTitle}}</div>
         <ul class="picLists">
           <li v-for="(pic,index) in item.itemList" :key="index" v-if="item.itemList[index]">
-            <img :src="pic.itemUrl" alt="" >
+            <img  v-lazy="pic.itemUrl" alt="" >
           </li>
         </ul>
         <div class="bottom">
